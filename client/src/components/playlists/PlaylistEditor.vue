@@ -55,7 +55,6 @@ async function save() {
 function drop(e, target) {
   const name = e.dataTransfer.getData("text/plain");
   if (name) {
-    if (props.playlist.assets.some((a) => a.filename === name)) return;
     const d = store.filesDetails[name] || {};
     props.playlist.assets.splice(target ?? props.playlist.assets.length, 0, {
       filename: name,

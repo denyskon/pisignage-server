@@ -1,5 +1,7 @@
 .idea
 node_modules
+client/node_modules
+specs/
 
 public/app/bower_components
 data/sync_folders
@@ -7,8 +9,5 @@ data/sync_folders
 data/releases
 data/licenses
 
-
-
 data/releases/package.json
-
 data/releases/server-package.json

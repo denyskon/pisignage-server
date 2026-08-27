@@ -10,6 +10,8 @@ services:
   pisignage-server:
     build:
       context: .
+    environment:
+      MONGOLAB_URI: mongodb://mongo:27017/pisignage-server-dev
     ports:
       - 3000:3000
     volumes:

@@ -2,7 +2,15 @@
 
 Server code to manage piSignage players in a LAN or Private Network or to setup your own server!
 
-Run the `npm install` command after `git pull` and before starting the server
+A prebuilt web UI ships in `public/` — a plain `npm install && npm start` is
+enough. Root-level `npm run dev` starts the complete development environment:
+the scoped nodemon backend on port 3000 and Vite frontend on port 5173. The
+backend watcher observes only `server.js`, `app/`, and `config/`, never runtime
+data or built frontend files. The UI is a Vue 3 + Vite app (source in
+`client/`); rebuild its production bundle with `npm run build:client`.
+
+When Download Access uses credentials other than the default `pi` / `pi`, start
+the dev stack with `PISIGNAGE_USER='user' PISIGNAGE_PASSWORD='password' npm run dev`.
 
 ## Docker image available - beta
 - Install docker from https://docs.docker.com/get-docker/

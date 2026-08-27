@@ -3,7 +3,6 @@
 var fs = require('fs'),
     path = require('path'),
     async = require('async'),
-    util = require('util'),
     _ = require('lodash'),
     fileUtil = require('../others/file-util');
 
@@ -34,7 +33,7 @@ exports.index = function (req, res) {
         function(next)  {
             Asset.find({}, function (err, data) {
                 if (err) {
-                    util.log("Error reading Asset Collection: "+err);
+                    console.log("Error reading Asset Collection: "+err);
                 } else {
                     dbdata = data;
                 }
@@ -65,7 +64,7 @@ exports.createFiles = function (req, res) {
     async.each(files, renameFile, function (err) {
         if (err) {
             var msg = "File rename error after upload: "+err;
-            util.log(msg);
+            console.log(msg);
             return rest.sendError(res, msg);
         } else {
             return rest.sendSuccess(res, ' Successfully uploaded files', data);
@@ -154,7 +153,7 @@ exports.getFileDetails = function (req, res) {
         function(next) {
             Asset.findOne({name: file}, function (err, data) {
                 if (err) {
-                    util.log("Error reading Asset Collection: " + err);
+                    console.log("Error reading Asset Collection: " + err);
                 } else {
                     dbData = data;
                 }
@@ -209,7 +208,7 @@ exports.deleteFile = function (req, res) {
         function(next) {
             Asset.remove({name: file}, function (err) {
                 if (err)
-                    util.log('unable to delete asset from db,' + file)
+                    console.log('unable to delete asset from db,' + file)
                 next();
             })
         },
@@ -217,7 +216,7 @@ exports.deleteFile = function (req, res) {
             if(file.match(config.videoRegex) || file.match(config.imageRegex)){
                 fs.unlink(thumbnailPath, function (err) {
                     if (err)
-                        util.log('unable to find/delete thumbnail: ' + err)
+                        console.log('unable to find/delete thumbnail: ' + err)
                     next();
                 })
             } else {
@@ -251,13 +250,13 @@ exports.updateAsset = function (req, res) {
             function(next) {
                 Asset.findOne({name: oldName}, function(err, asset){
                     if (err || !asset) {
-                        util.log('unable to find asset from db,' + oldName)
+                        console.log('unable to find asset from db,' + oldName)
                         return next();
                     }
                     asset.name = newName;
                     asset.save(function(err) {
                         if (err)
-                            util.log('unable to save asset after rename,' + oldName)
+                            console.log('unable to save asset after rename,' + oldName)
                         next();
                     });
                 });

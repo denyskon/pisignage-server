@@ -41,10 +41,15 @@
     "ws": "^7.4.6"
   },
   "devDependencies": {
+    "concurrently": "^9.2.4",
     "nodemon": "latest"
   },
   "scripts": {
-    "start": "./node_modules/.bin/nodemon server.js"
+    "start": "node server.js",
+    "dev": "concurrently --kill-others-on-fail --names server,client --prefix-colors blue,magenta \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "nodemon --watch server.js --watch app --watch config --ext js,json --ignore data --ignore public --ignore client server.js",
+    "dev:client": "npm --prefix client run dev",
+    "build:client": "cd client && npm install && npm run build"
   },
   "license": "(MIT OR Apache-2.0)"
 }

@@ -11,6 +11,8 @@ services:
   pisignage-server:
     image: pisignage/pisignage-server:latest
     restart: unless-stopped
+    environment:
+      MONGOLAB_URI: mongodb://mongo:27017/pisignage-server-dev
     ports:
       - 3000:3000
     volumes:

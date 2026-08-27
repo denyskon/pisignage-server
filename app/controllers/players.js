@@ -312,6 +312,9 @@ exports.createObject = function (req, res) {
 
     var player;
 
+    if (typeof req.body.myIpAddress === 'string')
+        req.body.myIpAddress = req.body.myIpAddress.trim();
+
     Player.findOne({cpuSerialNumber: req.body.cpuSerialNumber}, function (err, data) {
 
         if (err) {
@@ -348,6 +351,9 @@ exports.createObject = function (req, res) {
 
 exports.updateObject = function (req, res) {
     var object = req.object;
+
+    if (typeof req.body.myIpAddress === 'string')
+        req.body.myIpAddress = req.body.myIpAddress.trim();
 
     if (req.body.group && req.object.group._id != req.body.group._id) {
         req.body.registered = false;

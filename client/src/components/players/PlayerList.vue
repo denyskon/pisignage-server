@@ -100,14 +100,18 @@ function upgrade(p) {
   if (p.version !== target) return true;
   return !p.player2 && !!store.currentVersion.beta;
 }
+function ipOf(p) {
+  return (p.myIpAddress || "").trim();
+}
 function playerUrl(p) {
-  if (!p.myIpAddress) return null;
+  const ip = ipOf(p);
+  if (!ip) return null;
   const credentials = store.serverConfig?.authCredentials;
   const userinfo =
     credentials?.user !== undefined && credentials?.user !== null
       ? `${encodeURIComponent(credentials.user)}:${encodeURIComponent(credentials.password || "")}@`
       : "";
-  return `http://${userinfo}${p.myIpAddress}:8000/`;
+  return `http://${userinfo}${ip}:8000/`;
 }
 onMounted(() => {
   if (!store.serverConfig) loadServerConfig().catch(() => {});
@@ -189,7 +193,7 @@ onBeforeUnmount(() => clearInterval(timer));
                 target="_blank"
                 rel="noopener"
                 class="fw-semibold text-decoration-none"
-                :title="'Open player web UI at ' + p.myIpAddress + ':8000'"
+                :title="'Open player web UI at ' + ipOf(p) + ':8000'"
                 >{{ truncate(displayName(p), 35) }}</a
               ><strong v-else>{{ truncate(displayName(p), 35) }}</strong>
               <button
@@ -200,7 +204,7 @@ onBeforeUnmount(() => clearInterval(timer));
                 <Terminal :size="16" />
               </button>
             </div>
-            <small class="text-muted">{{ p.myIpAddress || "IP:NA" }}</small>
+            <small class="text-muted">{{ ipOf(p) || "IP:NA" }}</small>
           </div>
           <div class="col-lg-3">
             <a href="#" @click.prevent="$router.push('/assets/main')">{{

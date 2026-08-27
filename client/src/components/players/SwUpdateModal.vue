@@ -31,7 +31,11 @@ async function update(version = target.value) {
 </script>
 <template>
   <PiModal title="Software update" @close="e('close')"
-    ><p v-if="player.version === target">Your player is up to date.</p>
+    ><p v-if="!target">
+      Latest version information is unavailable. The server could not reach the
+      piSignage release feed.
+    </p>
+    <p v-else-if="player.version === target">Your player is up to date.</p>
     <p v-else>
       Update software from {{ player.version || "unknown" }} to {{ target }}?
     </p>
@@ -44,7 +48,11 @@ async function update(version = target.value) {
         Update to beta {{ store.currentVersion.beta }}</button
       ><button class="btn btn-outline-secondary" @click="e('close')">
         Cancel</button
-      ><button class="btn btn-danger" :disabled="busy" @click="update">
+      ><button
+        class="btn btn-danger"
+        :disabled="busy || !target"
+        @click="update"
+      >
         Update
       </button></template
     ></PiModal

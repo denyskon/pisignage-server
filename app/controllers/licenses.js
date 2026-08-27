@@ -3,7 +3,6 @@
 var fs = require('fs'),
 	path = require('path'),
 	async = require('async'),
-    exec = require('child_process').exec,
     _ = require('lodash');
 
 var serverIp = require('ip').address();
@@ -44,10 +43,11 @@ exports.saveLicense = function(req,res){ // save license files
 		savedFiles = [];
 		
 	async.each(uploadedFiles,function(file,callback){
-		fs.rename(file.path,path.join(licenseDir, file.originalname),function(err){
+		var originalname = Buffer.from(file.originalname, 'latin1').toString('utf8');
+		fs.rename(file.path,path.join(licenseDir, originalname),function(err){
 			if(err)
 				return callback(err);
-			savedFiles.push({name: file.originalname , size: file.size});
+			savedFiles.push({name: originalname , size: file.size});
 			callback();
 		});
 	},function(err){
@@ -95,19 +95,7 @@ exports.getSettings = function(req,res) {
         } else {
             var obj = data.toObject()
             obj.serverIp = serverIp;
-            exec('git log -1 --format="%cd" && git log -1 --format="%H"',function(err,stdout,stderr){
-                if(err || stderr){
-                    obj.date = 'N/A';
-                    obj.version = 'N/A';
-                    console.log('There was an error obtaining the current server version from git:');
-                    console.log(stderr);
-                }else{
-                    stdout = stdout.trim().split('\n');
-                    obj.date = [stdout[0].split(' ')[1],stdout[0].split(' ')[2],stdout[0].split(' ')[4]].join(' '); 
-                    obj.version = stdout[1].slice(0,6);
-                }
-                return rest.sendSuccess(res, 'Settings', obj);
-            });
+            return rest.sendSuccess(res, 'Settings', obj);
         }
     })
 }

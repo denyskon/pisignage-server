@@ -15,6 +15,12 @@ var download = function(url, dest, cb) {
     var file = fs.createWriteStream(dest);
     var request = http.get(url, function(response) {
         console.log("Downloading "+url)
+        if (response.statusCode !== 200) {
+            response.resume(); // discard body, don't leave the socket dangling
+            fs.unlink(dest, function(err){});
+            if (cb) cb("Download failed: " + url + " responded with HTTP " + response.statusCode);
+            return;
+        }
         response.on('data', function(data) {
             process.stdout.write("#");
         })
@@ -61,10 +67,13 @@ var checkAndDownloadImage = function() {
                 return async_cb(true)
             }
 
+            // A missing local package.json just means this is a fresh
+            // install with nothing cached yet; that's expected, not a
+            // failure, so don't halt the series over it.
             fs.stat(packageJsonFile, function(err) {
                 if (err)
                     update = true;
-                async_cb(err)
+                async_cb()
             })
         },
         function(async_cb){
@@ -78,7 +87,7 @@ var checkAndDownloadImage = function() {
             fs.stat(packageJsonFile_p2, function(err) {
                 if (err)
                     update = true;
-                async_cb(err)
+                async_cb()
             })
         },
         function(async_cb) {

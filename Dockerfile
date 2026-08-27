@@ -12,6 +12,8 @@ RUN apk add  ffmpeg
 RUN apk add imagemagick
 
 ENV NODE_ENV=production
+ENV DATA_DIR=/data
+ENV MEDIA_DIR=/media
 
 WORKDIR /pisignage-server
 

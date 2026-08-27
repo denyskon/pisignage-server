@@ -73,7 +73,7 @@ exports.createFiles = function (req, res) {
 
     function renameFile(fileObj, next) {
         console.log("Uploaded file: "+fileObj.path);
-        var filename = fileObj.originalname.replace(config.filenameRegex, '').normalize("NFC");
+        var filename = Buffer.from(fileObj.originalname, 'latin1').toString('utf8').replace(config.filenameRegex, '').normalize("NFC");
 
         var tr = {"ä":"ae", "ö":"oe", "ß":"ss", "ü":"ue", "æ":"ae", "ø":"oe", "å":"aa", "é":"e", "è":"e" }
         filename = filename.replace(/[äößüæøåéè]/gi,function(matched){

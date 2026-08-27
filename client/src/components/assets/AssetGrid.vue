@@ -56,6 +56,16 @@ const rows = computed(() => {
       (!label.value || (r.fileDetails.labels || []).includes(label.value)),
   );
 });
+function toggleManage() {
+  if (!manage.value) {
+    rename.value = Object.fromEntries(
+      rows.value.map((r) => [r.fileDetails.name, r.fileDetails.name]),
+    );
+  } else {
+    rename.value = {};
+  }
+  manage.value = !manage.value;
+}
 function drag(e, row) {
   if (props.dragSource)
     e.dataTransfer.setData("text/plain", row.fileDetails.name);
@@ -79,11 +89,13 @@ async function remove(row) {
 }
 async function saveRename(row) {
   const n = sanitizeName(rename.value[row.fileDetails.name]);
-  if (!n) return;
+  if (!n || n === row.fileDetails.name) return;
   try {
     await api.post(urls.files + encodeURIComponent(row.fileDetails.name), {
       newname: n,
     });
+    delete rename.value[row.fileDetails.name];
+    rename.value[n] = n;
     await loadFiles();
     toast("Asset renamed");
     emit("changed");
@@ -158,10 +170,7 @@ function addType(t) {
           </li>
         </ul>
       </div>
-      <button
-        class="btn btn-outline-secondary btn-sm"
-        @click="manage = !manage"
-      >
+      <button class="btn btn-outline-secondary btn-sm" @click="toggleManage">
         <Pencil :size="16" /> {{ manage ? "Done" : "Manage" }}
       </button>
     </header>

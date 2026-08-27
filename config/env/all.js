@@ -4,11 +4,13 @@
 var path = require('path');
 
 var rootPath = process.cwd(),
-    dataDir = path.join(rootPath, '/data'),
-    assetDir = path.join(rootPath, '/../media');
-// var rootPath = process.cwd(),                     //for docker only
-//     dataDir = path.join('/data'),
-//     assetDir = path.join('/media');
+    // Docker deployments mount persistent volumes at absolute /data and
+    // /media (see docker-compose.yml); bare-metal/npm-start installs keep
+    // everything relative to the app checkout. DATA_DIR/MEDIA_DIR let the
+    // Dockerfile pin the correct absolute paths without breaking the
+    // non-Docker default.
+    dataDir = process.env.DATA_DIR || path.join(rootPath, '/data'),
+    assetDir = process.env.MEDIA_DIR || path.join(rootPath, '/../media');
 
 module.exports = {
     root: rootPath,

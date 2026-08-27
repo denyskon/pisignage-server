@@ -93,11 +93,12 @@ function open(type, player) {
   modal.value = type;
 }
 function upgrade(p) {
-  return (
-    p.version &&
-    (p.version !== store.currentVersion.version || store.currentVersion.beta) &&
-    p.version !== store.currentVersion.versionP2
-  );
+  const target = p.player2
+    ? store.currentVersion.versionP2 || store.currentVersion.version
+    : store.currentVersion.version;
+  if (!p.version || !target) return false;
+  if (p.version !== target) return true;
+  return !p.player2 && !!store.currentVersion.beta;
 }
 function playerUrl(p) {
   if (!p.myIpAddress) return null;

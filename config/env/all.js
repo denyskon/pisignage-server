@@ -24,7 +24,6 @@ module.exports = {
     syncDir: path.join(dataDir, '/sync_folders'),
     syncDirPath: path.join(dataDir, '/sync_folders/'),
 
-    viewDir: path.join(rootPath, '/app/views'),
     mediaDir: assetDir,
     mediaPath: assetDir + '/',
     thumbnailDir: assetDir + '/_thumbnails',

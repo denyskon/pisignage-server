@@ -128,11 +128,6 @@ module.exports = function (app) {
     app.use('/media', express.static(path.join(config.mediaDir)));
     app.use(express.static(path.join(config.root, 'public')));
 
-    app.set('view engine', 'pug');
-    app.locals.basedir = config.viewDir; //for jade root
-
-    app.set('views', config.viewDir);
-
     //app.use(logger('dev'));
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
@@ -150,11 +145,16 @@ module.exports = function (app) {
         if (err.message.indexOf('Range Not Satisfiable') >=0 )
             return res.send();
         console.error(err.stack)
-        res.status(500).render('500')
+        res.status(500).contentType('json').json({
+            stat_message: 'Server error: ' + err.message,
+            success: false
+        });
     })
 
     app.use(function (req, res, next) {
-        //res.redirect('/');
-        res.status(404).render('404', {url: req.originalUrl})
+        res.status(404).contentType('json').json({
+            stat_message: 'Not found: ' + req.originalUrl,
+            success: false
+        });
     })
 };
